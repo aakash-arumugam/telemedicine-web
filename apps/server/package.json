@@ -4,7 +4,7 @@
     "description": "Telemedicine Web API Server",
     "main": "dist/server.js",
     "scripts": {
-        "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts",
+        "dev": "tsx watch src/server.ts",
         "build": "tsc",
         "start": "node dist/server.js",
         "watch": "tsc --watch"
@@ -17,7 +17,7 @@
         "cors": "^2.8.5",
         "dotenv": "^17.2.3",
         "express": "^5.2.1",
-        "googleapis": "^167.0.0",
+        "googleapis": "^140.0.0",
         "jsonwebtoken": "^9.0.3",
         "mongoose": "^9.0.1",
         "node-cron": "^4.2.1",
@@ -36,6 +36,7 @@
         "nodemon": "^3.1.11",
         "ts-node": "^10.9.2",
         "tsconfig-paths": "^4.2.0",
+        "tsx": "^4.21.0",
         "typescript": "~5.9.3"
     }
 }
