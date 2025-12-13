@@ -1,0 +1,41 @@
+{
+    "name": "server",
+    "version": "1.0.0",
+    "description": "Telemedicine Web API Server",
+    "main": "dist/server.js",
+    "scripts": {
+        "dev": "nodemon --exec ts-node -r tsconfig-paths/register src/server.ts",
+        "build": "tsc",
+        "start": "node dist/server.js",
+        "watch": "tsc --watch"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "bcryptjs": "^3.0.3",
+        "cors": "^2.8.5",
+        "dotenv": "^17.2.3",
+        "express": "^5.2.1",
+        "googleapis": "^167.0.0",
+        "jsonwebtoken": "^9.0.3",
+        "mongoose": "^9.0.1",
+        "node-cron": "^4.2.1",
+        "winston": "^3.19.0",
+        "winston-daily-rotate-file": "^5.0.0",
+        "zod": "^4.1.13",
+        "zod-express-middleware": "^1.4.0"
+    },
+    "devDependencies": {
+        "@types/bcryptjs": "^3.0.0",
+        "@types/cors": "^2.8.19",
+        "@types/express": "^5.0.6",
+        "@types/jsonwebtoken": "^9.0.10",
+        "@types/node": "^24.10.1",
+        "@types/node-cron": "^3.0.11",
+        "nodemon": "^3.1.11",
+        "ts-node": "^10.9.2",
+        "tsconfig-paths": "^4.2.0",
+        "typescript": "~5.9.3"
+    }
+}
