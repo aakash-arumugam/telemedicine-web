@@ -8,12 +8,13 @@ const api = axios.create({
 });
 
 export interface SignupData {
+    name: string,
     email: string;
-    password?: string;
-    gender?: string;
-    maritalStatus?: string;
-    birthdate?: string;
-    code?: string;
+    password: string;
+    gender: string;
+    maritalStatus: string;
+    dob: Date | undefined;
+    code: string;
 }
 
 export const verifyOtp = async (code: string): Promise<boolean> => {

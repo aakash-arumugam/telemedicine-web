@@ -1,23 +1,29 @@
 import * as userRepo from './user.repo';
-import { IUser } from './user.model';
+import { IUser } from './user.types';
 import { PasswordUtils } from '../../utils/password.utils';
 import { JWTUtils } from '../../utils/jwt.utils';
+import { userCreationSchemaT } from './user.validator';
 
-export const registerUser = async (name: string, email: string, password: string): Promise<{ user: IUser; token: string }> => {
+export const registerUser = async (data: userCreationSchemaT): Promise<{ user: IUser; token: string }> => {
     // Check if user exists
-    const existingUser = await userRepo.findUserByEmail(email);
+    const existingUser = await userRepo.findUserByEmail(data.email);
     if (existingUser) {
-        throw new Error('User already exists');
+        throw new Error(`User with email ${data.email} already exists`);
     }
 
+    //Validate Code
+
     // Hash password
-    const hashedPassword = await PasswordUtils.hash(password);
+    const hashedPassword = await PasswordUtils.hash(data.password);
 
     // Create user
     const user = await userRepo.createUser({
-        name,
-        email,
+        name: data.name,
+        email: data.email,
         password: hashedPassword,
+        dob: new Date(data.dob),
+        gender: data.gender,
+        maritalStatus: data.maritalStatus
     });
 
     // Generate token
@@ -66,48 +72,50 @@ export const deleteUser = async (id: string): Promise<IUser | null> => {
     return await userRepo.deleteUser(id);
 };
 
-export const findOrCreateGoogleUser = async (
-    googleId: string,
-    email: string,
-    name: string,
-    accessToken: string,
-    refreshToken: string
-): Promise<IUser> => {
-    // First, try to find user by googleId
-    let user = await userRepo.findUserByGoogleId(googleId);
+// export const findOrCreateGoogleUser = async (
+//     googleId: string,
+//     email: string,
+//     name: string,
+//     accessToken: string,
+//     refreshToken: string
+// ) => {
+//     // First, try to find user by googleId
+//     let user = await userRepo.findUserByGoogleId(googleId);
 
-    if (user) {
-        // Update tokens for existing Google user
-        user = await userRepo.updateUser(user._id.toString(), {
-            accessToken,
-            refreshToken,
-        });
-        return user!;
-    }
+//     if (user) {
+//         // Update tokens for existing Google user
+//         user = await userRepo.updateUser(user._id.toString(), {
+//             accessToken,
+//             refreshToken,
+//         });
+//         return user!;
+//     }
 
-    // If not found by googleId, try to find by email (link existing account)
-    user = await userRepo.findUserByEmail(email);
+//     // If not found by googleId, try to find by email (link existing account)
+//     user = await userRepo.findUserByEmail(email);
 
-    if (user) {
-        // Link existing email account with Google
-        user = await userRepo.updateUser(user._id.toString(), {
-            googleId,
-            accessToken,
-            refreshToken,
-            authProvider: 'google',
-        });
-        return user!;
-    }
+//     if (user) {
+//         // Link existing email account with Google
+//         user = await userRepo.updateUser(user._id.toString(), {
+//             googleId,
+//             accessToken,
+//             refreshToken,
+//             authProvider: 'google',
+//         });
+//         return user!;
+//     }
 
-    // Create new user with Google credentials
-    user = await userRepo.createUser({
-        name,
-        email,
-        googleId,
-        accessToken,
-        refreshToken,
-        authProvider: 'google',
-    });
+//     // Create new user with Google credentials
+//     user = await userRepo.createUser({
+//         name,
+//         email,
+//         googleId,
+//         accessToken,
+//         refreshToken,
+//         authProvider: 'google',
+//     });
 
-    return user;
-};
+//     return user;
+// };
+
+export const getUserByEmail = async (email: string) => await userRepo.findUserByEmail(email);

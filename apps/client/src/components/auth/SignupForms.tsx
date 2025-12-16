@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Eye, EyeOff, ArrowRight, CheckCircle2, Calendar, User, Heart, AlertCircle, Loader2 } from 'lucide-react';
 import { motion } from 'framer-motion';
+import { useMutation } from '@tanstack/react-query';
+import { verifyUserExists } from '../../api/user';
 
 interface StepProps {
     onNext: (data: any) => void;
@@ -24,6 +26,24 @@ export function Step1Credentials({ onNext, data }: StepProps) {
     const [error, setError] = useState('');
     const [shake, setShake] = useState(false);
 
+    const verifyEmailMutation = useMutation({
+        mutationFn: () => verifyUserExists(formData.email),
+        onSuccess: (data) => {
+            if (data.data.exists) {
+                setError(data.message);
+                setShake(true);
+                setTimeout(() => setShake(false), 400);
+            } else {
+                onNext(formData);
+            }
+        },
+        onError: (error) => {
+            setError(error.message);
+            setShake(true);
+            setTimeout(() => setShake(false), 400);
+        }
+    })
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (!formData.email || !formData.password) {
@@ -32,7 +52,7 @@ export function Step1Credentials({ onNext, data }: StepProps) {
             setTimeout(() => setShake(false), 400);
             return;
         }
-        onNext(formData);
+        verifyEmailMutation.mutate();
     };
 
     return (
@@ -100,16 +120,17 @@ export function Step1Credentials({ onNext, data }: StepProps) {
 // --- Step 2: Personal Details ---
 export function Step2PersonalDetails({ onNext, data }: StepProps) {
     const [formData, setFormData] = useState({
+        name: data.name || '',
         gender: data.gender || '',
         maritalStatus: data.maritalStatus || '',
-        birthdate: data.birthdate || ''
+        dob: data.dob || ''
     });
     const [error, setError] = useState('');
     const [shake, setShake] = useState(false);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (!formData.gender || !formData.maritalStatus || !formData.birthdate) {
+        if (!formData.gender || !formData.maritalStatus || !formData.dob) {
             setError('Please complete all details');
             setShake(true);
             setTimeout(() => setShake(false), 400);
@@ -124,6 +145,21 @@ export function Step2PersonalDetails({ onNext, data }: StepProps) {
             className="space-y-4"
             animate={shake ? shakeAnimation : {}}
         >
+            <div className="space-y-2">
+                <label className="text-sm font-medium text-neutral-700 flex items-center gap-2">
+                    <User size={16} /> Name
+                </label>
+                <input
+                    type="text"
+                    className="w-full px-4 py-3 rounded-lg border border-neutral-200 focus:border-neutral-900 focus:ring-0 transition-colors outline-none bg-neutral-50 focus:bg-white"
+                    placeholder="Enter your name"
+                    value={formData.name}
+                    onChange={(e) => {
+                        setFormData({ ...formData, name: e.target.value });
+                        setError('');
+                    }}
+                />
+            </div>
             <div className="space-y-2">
                 <label className="text-sm font-medium text-neutral-700 flex items-center gap-2">
                     <User size={16} /> Gender
@@ -156,10 +192,8 @@ export function Step2PersonalDetails({ onNext, data }: StepProps) {
                     }}
                 >
                     <option value="">Select Status</option>
-                    <option value="single">Single</option>
-                    <option value="married">Married</option>
-                    <option value="divorced">Divorced</option>
-                    <option value="widowed">Widowed</option>
+                    <option value="Single">Single</option>
+                    <option value="Married">Married</option>
                 </select>
             </div>
 
@@ -170,9 +204,9 @@ export function Step2PersonalDetails({ onNext, data }: StepProps) {
                 <input
                     type="date"
                     className="w-full px-4 py-3 rounded-lg border border-neutral-200 focus:border-neutral-900 focus:ring-0 transition-colors outline-none bg-neutral-50 focus:bg-white"
-                    value={formData.birthdate}
+                    value={formData.dob}
                     onChange={(e) => {
-                        setFormData({ ...formData, birthdate: e.target.value });
+                        setFormData({ ...formData, dob: e.target.value });
                         setError('');
                     }}
                 />
@@ -199,7 +233,7 @@ export function Step2PersonalDetails({ onNext, data }: StepProps) {
 }
 
 // --- Step 3: Verification ---
-export function Step3Verification({ onNext, isPending, isError }: StepProps) {
+export function Step3Verification({ onNext, data, isPending, isError }: StepProps) {
     const [code, setCode] = useState(['', '', '', '', '', '']);
     const [timer, setTimer] = useState(60);
     const [canResend, setCanResend] = useState(false);
@@ -252,12 +286,8 @@ export function Step3Verification({ onNext, isPending, isError }: StepProps) {
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        if (code.some(c => !c)) {
-            setShake(true);
-            setTimeout(() => setShake(false), 400);
-            return;
-        }
-        onNext({ code: code.join('') });
+        onNext({ ...data, code: code.join('') });
+        // createUserMutation.mutate();
     };
 
     return (

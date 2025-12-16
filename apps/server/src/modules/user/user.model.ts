@@ -1,25 +1,13 @@
 import { COLLECTION_NAMES } from 'common/constants';
 import mongoose, { Document, Schema } from 'mongoose';
+import { IUser } from './user.types';
 
-export interface IUser extends Document {
-    name: string;
-    email: string;
-    password?: string;
-    googleId?: string;
-    accessToken?: string;
-    refreshToken?: string;
-    authProvider: 'local' | 'google';
-    gender?: string;
-    maritalStatus?: string;
-    dob?: Date;
-    address?: string;
-    isProfileComplete: boolean;
-    lastSync: Date | null;
-    createdAt: Date;
-    updatedAt: Date;
+export interface IUserDoc extends IUser, Document {
+    createdAt?: Date;
+    updatedAt?: Date;
 }
 
-const UserSchema: Schema = new Schema(
+const UserSchema: Schema = new Schema<IUserDoc>(
     {
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true, lowercase: true },
@@ -33,7 +21,6 @@ const UserSchema: Schema = new Schema(
         dob: { type: Date, required: false },
         address: { type: String, required: false },
         isProfileComplete: { type: Boolean, default: false },
-        lastSync: { type: Date, default: null }
     },
     { timestamps: true }
 );

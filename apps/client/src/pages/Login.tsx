@@ -1,50 +1,68 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useMutation } from '@tanstack/react-query';
 import AuthLayout from '../components/auth/AuthLayout';
 import StepWizard from '../components/auth/StepWizard';
 import { Step1Credentials, Step2PersonalDetails, Step3Verification } from '../components/auth/SignupForms';
-import { Eye, EyeOff, ArrowRight } from 'lucide-react';
-import { verifyOtp, signup, type SignupData } from '../api/auth.api';
+import { Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { type SignupData } from '../api/auth.api';
+import { createUser, loginUser } from '../api/user';
+
+const shakeAnimation = {
+    x: [0, -10, 10, -10, 10, 0],
+    transition: { duration: 0.4 }
+};
 
 export default function Login() {
     const navigate = useNavigate();
     const [authMode, setAuthMode] = useState<'login' | 'signup'>('login');
     const [currentStep, setCurrentStep] = useState(1);
-    const [formData, setFormData] = useState<Partial<SignupData>>({});
+    const [formData, setFormData] = useState<SignupData>({
+        name: '',
+        email: '',
+        password: '',
+        gender: '',
+        maritalStatus: '',
+        dob: undefined,
+        code: '',
+    });
 
     // Login State
     const [loginEmail, setLoginEmail] = useState('');
     const [loginPassword, setLoginPassword] = useState('');
     const [showPassword, setShowPassword] = useState(false);
+    const [error, setError] = useState('');
+    const [shake, setShake] = useState(false);
 
-    // Mutations
-    const verifyOtpMutation = useMutation({
-        mutationFn: verifyOtp,
-        onSuccess: (isValid) => {
-            if (isValid) {
-                signupMutation.mutate(formData as SignupData);
-            }
+    const userLoginMutation = useMutation({
+        mutationFn: loginUser,
+        onSuccess: (data) => {
+            navigate('/dashboard');
+            localStorage.setItem('token', data.data.token);
         },
-    });
+        onError: (error: any) => {
+            setError(error.response.data.error);
+            setShake(true);
+            setTimeout(() => setShake(false), 400);
+        }
+    })
 
     const signupMutation = useMutation({
-        mutationFn: signup,
-        onSuccess: () => {
-            console.log('Signup Successful');
+        mutationFn: createUser,
+        onSuccess: (responseData) => {
+            localStorage.setItem('token', responseData.data.token);
             navigate('/dashboard');
         },
-        onError: (error) => {
-            console.error('Signup Failed:', error);
-            // Handle signup error (e.g., show toast)
+        onError: () => {
+            // setShake(true);
+            // setTimeout(() => setShake(false), 400);
         }
-    });
+    })
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log('Login:', { loginEmail, loginPassword });
-        // TODO: Implement actual login logic
-        navigate('/dashboard');
+        userLoginMutation.mutate({ email: loginEmail, password: loginPassword });
     };
 
     const handleSignupStep = (stepData: any) => {
@@ -54,12 +72,17 @@ export default function Login() {
         if (currentStep < 3) {
             setCurrentStep(currentStep + 1);
         } else {
-            // Final Step: Verify OTP
-            if (stepData.code) {
-                verifyOtpMutation.mutate(stepData.code);
-            }
+            console.log("Form Data....", { ...formData })
+            signupMutation.mutate({ name: formData.name, email: formData.email, password: formData.password, dob: formData.dob, gender: formData.gender, maritalStatus: formData.maritalStatus, code: formData.code });
         }
     };
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            navigate('/dashboard');
+        }
+    }, []);
 
     return (
         <AuthLayout
@@ -68,7 +91,11 @@ export default function Login() {
         >
             {authMode === 'login' ? (
                 // --- Login Form ---
-                <form onSubmit={handleLogin} className="space-y-4">
+                <motion.form
+                    onSubmit={handleLogin}
+                    className="space-y-4"
+                    animate={shake ? shakeAnimation : {}}
+                >
                     <div className="space-y-2">
                         <label className="text-sm font-medium text-neutral-700">Email Address</label>
                         <input
@@ -103,6 +130,17 @@ export default function Login() {
                             </button>
                         </div>
                     </div>
+
+                    {error && (
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="flex items-center gap-2 text-red-500 text-sm"
+                        >
+                            <AlertCircle size={16} /> {error}
+                        </motion.div>
+                    )}
+
                     <button
                         type="submit"
                         className="w-full bg-neutral-900 text-white py-3 rounded-lg font-medium hover:bg-neutral-800 transition-colors flex items-center justify-center gap-2 mt-6"
@@ -122,7 +160,7 @@ export default function Login() {
                             </button>
                         </p>
                     </div>
-                </form>
+                </motion.form>
             ) : (
                 // --- Signup Flow ---
                 <div>
@@ -132,8 +170,8 @@ export default function Login() {
                         <Step3Verification
                             onNext={handleSignupStep}
                             data={formData}
-                            isPending={verifyOtpMutation.isPending || signupMutation.isPending}
-                            isError={verifyOtpMutation.isError}
+                            isPending={signupMutation.isPending}
+                            isError={signupMutation.isError}
                         />
                     </StepWizard>
 
@@ -145,7 +183,6 @@ export default function Login() {
                                 onClick={() => {
                                     setAuthMode('login');
                                     setCurrentStep(1);
-                                    verifyOtpMutation.reset();
                                 }}
                                 className="text-neutral-900 font-medium hover:underline"
                             >

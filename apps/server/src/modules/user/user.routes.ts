@@ -1,20 +1,15 @@
 import { Application, Request, Response, Router } from 'express';
 import * as userService from './user.service';
 import { authenticate } from '../../middleware/auth.middleware';
+import { validateUserCreation, validateUserLogin, validateVerifyUserExists } from './user.validator';
 
 export const defineUserRoutes = (app: Application, baseUrl: string): void => {
     const router = Router();
 
     // POST /api/v1/users/register - Register new user
-    router.post('/register', async (req: Request, res: Response) => {
+    router.post('/register', validateUserCreation, async (req: Request, res: Response) => {
         try {
-            const { name, email, password } = req.body;
-
-            if (!name || !email || !password) {
-                return res.status(400).json({ success: false, error: 'All fields are required' });
-            }
-
-            const { user, token } = await userService.registerUser(name, email, password);
+            const { user, token } = await userService.registerUser(req.body);
 
             res.status(201).json({
                 success: true,
@@ -25,6 +20,20 @@ export const defineUserRoutes = (app: Application, baseUrl: string): void => {
             res.status(400).json({ success: false, error: error.message });
         }
     });
+
+    router.post('/login', validateUserLogin, async (req: Request, res: Response) => {
+        try {
+            const { user, token } = await userService.loginUser(req.body.email, req.body.password);
+
+            res.status(200).json({
+                success: true,
+                data: { user, token },
+                message: 'User logged in successfully',
+            });
+        } catch (error: any) {
+            res.status(400).json({ success: false, error: error.message });
+        }
+    })
 
     // PUT /api/v1/users/profile - Update user profile
     router.put('/profile', authenticate, async (req: Request, res: Response) => {
@@ -55,6 +64,22 @@ export const defineUserRoutes = (app: Application, baseUrl: string): void => {
             res.status(400).json({ success: false, error: error.message });
         }
     });
+
+    //POST /api/v1/users/verify-user-exists
+    router.post('/verify-user-exists', validateVerifyUserExists, async (req: Request, res: Response) => {
+        try {
+            const email = req.body.email;
+
+            const user = await userService.getUserByEmail(email);
+            res.json({
+                success: true,
+                data: { exists: !!user },
+                message: `${user ? 'User already exists' : ''}`
+            });
+        } catch (error: any) {
+            res.status(400).json({ success: false, error: error.message });
+        }
+    })
 
     // Mount the router at /api/v1/users
     app.use(`${baseUrl}/users`, router);

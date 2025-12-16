@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
@@ -70,6 +70,13 @@ const PRESCRIPTIONS = [
 export default function Dashboard() {
     const navigate = useNavigate();
     const [hasAppointment, setHasAppointment] = useState(false); // Toggle for demo
+
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            navigate('/login');
+        }
+    }, [])
 
     return (
         <div className="min-h-screen bg-neutral-50 pb-20">
