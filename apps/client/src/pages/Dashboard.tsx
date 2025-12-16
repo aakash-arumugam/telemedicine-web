@@ -2,8 +2,6 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-    Bell,
-    ChevronDown,
     Calendar,
     Clock,
     Video,
@@ -15,12 +13,7 @@ import {
     ShieldCheck,
     Stethoscope
 } from 'lucide-react';
-
-// --- Mock Data ---
-const MOCK_USER = {
-    name: "Alex Johnson",
-    avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Alex"
-};
+import TopNavigation from '../components/layout/TopNavigation';
 
 const UPCOMING_APPOINTMENT = {
     id: 1,
@@ -81,7 +74,7 @@ export default function Dashboard() {
     return (
         <div className="min-h-screen bg-neutral-50 pb-20">
             {/* --- Top Navigation --- */}
-            <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-neutral-100 px-4 py-3">
+            {/* <nav className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-neutral-100 px-4 py-3">
                 <div className="flex items-center justify-between max-w-md mx-auto">
                     <div className="flex items-center gap-2">
                         <div className="w-8 h-8 bg-neutral-900 rounded-lg flex items-center justify-center text-white font-bold">
@@ -104,7 +97,8 @@ export default function Dashboard() {
                         </div>
                     </div>
                 </div>
-            </nav>
+            </nav> */}
+            <TopNavigation />
 
             <main className="max-w-md mx-auto px-4 py-6 space-y-8">
 
