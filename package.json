@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev:client": "pnpm --filter client dev",
+    "dev:client": "pnpm --filter client dev --host",
     "dev:server": "pnpm --filter server dev",
     "dev": "concurrently \"pnpm:dev:client\" \"pnpm:dev:server\" --names \"CLIENT,SERVER\" --prefix-colors \"cyan,magenta\"",
     "test": "echo \"Error: no test specified\" && exit 1"

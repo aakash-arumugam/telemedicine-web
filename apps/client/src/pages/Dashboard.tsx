@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
     Bell,
@@ -67,6 +68,7 @@ const PRESCRIPTIONS = [
 ];
 
 export default function Dashboard() {
+    const navigate = useNavigate();
     const [hasAppointment, setHasAppointment] = useState(false); // Toggle for demo
 
     return (
@@ -162,7 +164,10 @@ export default function Dashboard() {
                             </div>
                             <h3 className="font-bold text-neutral-900 mb-1">No upcoming visits</h3>
                             <p className="text-neutral-500 text-sm mb-5">Schedule a consultation with a top doctor today.</p>
-                            <button className="w-full bg-neutral-900 text-white py-3 rounded-xl font-medium text-sm hover:bg-neutral-800 transition-colors">
+                            <button
+                                onClick={() => navigate('/book-appointment')}
+                                className="w-full bg-neutral-900 text-white py-3 rounded-xl font-medium text-sm hover:bg-neutral-800 transition-colors"
+                            >
                                 Book Appointment
                             </button>
                         </motion.div>
@@ -175,6 +180,7 @@ export default function Dashboard() {
                     <div className="flex gap-3 overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide snap-x">
                         <motion.button
                             whileTap={{ scale: 0.95 }}
+                            onClick={() => navigate('/book-appointment')}
                             className="flex-shrink-0 snap-start flex flex-col items-center justify-center w-28 h-28 bg-neutral-900 text-white rounded-2xl shadow-lg shadow-neutral-200 gap-2"
                         >
                             <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center">
