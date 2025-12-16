@@ -148,7 +148,10 @@ export default function Dashboard() {
                                 <button className="flex-1 bg-neutral-900 text-white py-3 rounded-xl font-medium text-sm flex items-center justify-center gap-2 hover:bg-neutral-800 transition-colors shadow-lg shadow-neutral-200">
                                     <Video size={18} /> Join Consultation
                                 </button>
-                                <button className="px-4 py-3 rounded-xl font-medium text-sm border border-neutral-200 text-neutral-700 hover:bg-neutral-50 transition-colors">
+                                <button
+                                    onClick={() => navigate('/appointment/1')}
+                                    className="px-4 py-3 rounded-xl font-medium text-sm border border-neutral-200 text-neutral-700 hover:bg-neutral-50 transition-colors"
+                                >
                                     Details
                                 </button>
                             </div>
@@ -224,7 +227,8 @@ export default function Dashboard() {
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={{ opacity: 1, x: 0 }}
                                 transition={{ delay: index * 0.1 }}
-                                className="bg-white p-4 rounded-xl border border-neutral-100 flex items-center justify-between shadow-sm"
+                                onClick={() => navigate(`/appointment/${apt.id}`)}
+                                className="bg-white p-4 rounded-xl border border-neutral-100 flex items-center justify-between shadow-sm cursor-pointer hover:bg-neutral-50 transition-colors"
                             >
                                 <div className="flex items-center gap-3">
                                     <img

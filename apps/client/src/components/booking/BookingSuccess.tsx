@@ -71,7 +71,10 @@ export default function BookingSuccess({ data }: BookingSuccessProps) {
                 >
                     Back to Dashboard
                 </button>
-                <button className="w-full text-neutral-600 py-3 rounded-xl font-medium hover:bg-neutral-50 transition-colors">
+                <button
+                    onClick={() => navigate('/appointment/1')}
+                    className="w-full text-neutral-600 py-3 rounded-xl font-medium hover:bg-neutral-50 transition-colors"
+                >
                     View Appointment Details
                 </button>
             </div>
