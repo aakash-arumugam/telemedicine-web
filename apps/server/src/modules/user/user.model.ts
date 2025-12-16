@@ -11,7 +11,7 @@ const UserSchema: Schema = new Schema<IUserDoc>(
     {
         name: { type: String, required: true },
         email: { type: String, required: true, unique: true, lowercase: true },
-        password: { type: String, required: false },
+        password: { type: String, required: true },
         googleId: { type: String, required: false, unique: true, sparse: true },
         accessToken: { type: String, required: false },
         refreshToken: { type: String, required: false },
