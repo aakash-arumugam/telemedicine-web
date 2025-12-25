@@ -17,11 +17,11 @@ const DoctorSchema: Schema = new Schema<IDoctor>(
         speciality: { type: String, required: true },
         experience: { type: String, required: true },
         address: { type: String, required: true },
-        education: {
+        education: [{
             degree: { type: String, required: true },
             university: { type: String, required: true },
             year: { type: String, required: true },
-        },
+        }],
         tag: { type: String, required: true },
         isEnabled: { type: Boolean, default: true },
     },

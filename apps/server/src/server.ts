@@ -5,6 +5,7 @@ import { connectDB } from './config/database';
 import { defineUserRoutes } from './modules/user/user.routes';
 import { defineAuthRoutes } from './modules/auth/auth.routes';
 import { errorHandler } from './middleware/errorHandler';
+import { defineDoctorRoutes } from '@modules/doctor/doctor.routes';
 
 dotenv.config();
 
@@ -28,6 +29,7 @@ app.get('/', (req: Request, res: Response) => {
 // API Routes - /api/v1
 const API_PREFIX = '/api/v1';
 defineUserRoutes(app, API_PREFIX);
+defineDoctorRoutes(app, API_PREFIX);
 defineAuthRoutes(app, API_PREFIX);
 
 // Error handler (must be last)
