@@ -6,7 +6,23 @@ import { JWTUtils } from '@utils/jwt.utils';
 
 export const listDoctorsBySpeciality = async (speciality: string) => {
     const doctors = await doctorRepo.findAllDoctors({ speciality });
-    return doctors;
+
+    //Data Transformation
+    const transformedDoctors = doctors.map((doctor) => {
+
+        const data = doctor.toObject();
+        return {
+            ...data,
+            nextSlot: new Date(),
+            qualification: 'MD, FACC',
+            experience: '12 years',
+            rating: 4.9,
+            reviews: 128,
+            verified: true,
+        }
+    });
+
+    return transformedDoctors;
 }
 
 export const createDoctor = async (data: createDoctorSchemaT) => {
@@ -42,7 +58,7 @@ export const getDoctorsSpecialities = async (query: getDoctorsSpecialitiesSchema
     const pipeline = query.name ? [
         {
             $match: {
-                speciality: query.name
+                speciality: { $regex: query.name, $options: 'i' }
             }
         },
         {

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Search, Stethoscope, Heart, Brain, Baby, Eye, Bone, Activity } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { getDoctorsSpecialities } from '../../api/doctor';
 
 interface SpecialitySelectionProps {
     onNext: (speciality: any) => void;
@@ -20,9 +22,10 @@ const SPECIALITIES = [
 export default function SpecialitySelection({ onNext, onBack }: SpecialitySelectionProps) {
     const [search, setSearch] = useState('');
 
-    const filtered = SPECIALITIES.filter(s =>
-        s.name.toLowerCase().includes(search.toLowerCase())
-    );
+    const { data: specialitiesData, isPending: specialitiesPending } = useQuery({
+        queryKey: ['doctors', search],
+        queryFn: () => getDoctorsSpecialities({ name: search }),
+    })
 
     return (
         <div className="space-y-4">
@@ -40,21 +43,22 @@ export default function SpecialitySelection({ onNext, onBack }: SpecialitySelect
             </div>
 
             <div className="grid gap-3">
-                {filtered.map((item, index) => (
+                {specialitiesData?.map((item, index) => (
                     <motion.button
                         key={item.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.05 }}
                         onClick={() => onNext(item)}
-                        className="flex items-center gap-4 p-4 bg-white rounded-xl border border-neutral-100 shadow-sm hover:shadow-md transition-all text-left group"
+                        className="flex items-center gap-4 p-4 bg-white rounded-xl border border-neutral-100 shadow-sm hover:shadow-md transition-all text-left group hover:cursor-pointer"
                     >
-                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center ${item.color} group-hover:scale-110 transition-transform`}>
-                            <item.icon size={24} />
+                        <div className={`w-12 h-12 rounded-lg flex items-center justify-center bg-blue-100 text-blue-600 group-hover:scale-110 transition-transform`}>
+                            {/* <item.icon size={24} /> */}
+                            <Stethoscope size={24} />
                         </div>
                         <div className="flex-1">
                             <h3 className="font-bold text-neutral-900">{item.name}</h3>
-                            <p className="text-xs text-neutral-500">Available Doctors: {Math.floor(Math.random() * 10) + 2}</p>
+                            <p className="text-xs text-neutral-500">Available Doctors: {item.count}</p>
                         </div>
                     </motion.button>
                 ))}
