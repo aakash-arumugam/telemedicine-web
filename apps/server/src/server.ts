@@ -6,6 +6,7 @@ import { defineUserRoutes } from './modules/user/user.routes';
 import { defineAuthRoutes } from './modules/auth/auth.routes';
 import { errorHandler } from './middleware/errorHandler';
 import { defineDoctorRoutes } from '@modules/doctor/doctor.routes';
+import { defineAvailabilityRoutes } from '@modules/availability/availability.routes';
 
 dotenv.config();
 
@@ -31,6 +32,7 @@ const API_PREFIX = '/api/v1';
 defineUserRoutes(app, API_PREFIX);
 defineDoctorRoutes(app, API_PREFIX);
 defineAuthRoutes(app, API_PREFIX);
+defineAvailabilityRoutes(app, API_PREFIX);
 
 // Error handler (must be last)
 app.use(errorHandler);
