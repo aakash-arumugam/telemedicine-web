@@ -6,9 +6,6 @@ export interface IUser {
     accessToken?: string;
     refreshToken?: string;
     authProvider: 'local' | 'google';
-    gender?: string;
-    maritalStatus?: string;
-    dob?: Date;
-    address?: string;
+    role: 'patient' | 'doctor' | 'superadmin';
     isProfileComplete: boolean;
 }

@@ -1,4 +1,6 @@
 import * as userRepo from './user.repo';
+import * as patientRepo from '../patient/patient.repo';
+import * as doctorRepo from '../doctor/doctor.repo';
 import { IUser } from './user.types';
 import { PasswordUtils } from '../../utils/password.utils';
 import { JWTUtils } from '../../utils/jwt.utils';
@@ -21,10 +23,33 @@ export const registerUser = async (data: userCreationSchemaT): Promise<{ user: I
         name: data.name,
         email: data.email,
         password: hashedPassword,
-        dob: new Date(data.dob),
-        gender: data.gender,
-        maritalStatus: data.maritalStatus
+        role: data.role as 'patient' | 'doctor' | 'superadmin',
+        isProfileComplete: true // Assuming detailed info is passed
     });
+
+    if (data.role === 'patient') {
+        const patient = await patientRepo.createPatient({
+            userId: user._id,
+            gender: data.gender,
+            dob: data.dob,
+            address: data.address || "",
+            maritalStatus: data.maritalStatus
+        });
+
+    } else if (data.role === 'doctor') {
+        await doctorRepo.createDoctor({
+            userId: user._id,
+            name: data.name,
+            gender: data.gender || '',
+            dob: data.dob || new Date(),
+            speciality: data.speciality || '',
+            experience: data.experience || '',
+            address: data.address || '',
+            education: data.education || [],
+            tag: data.tag || '',
+            isEnabled: true
+        });
+    }
 
     // Generate token
     const token = JWTUtils.generateToken(user._id.toString());

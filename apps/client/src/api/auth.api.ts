@@ -15,6 +15,7 @@ export interface SignupData {
     maritalStatus: string;
     dob: Date | undefined;
     code: string;
+    role: "patient" | "doctor";
 }
 
 export const verifyOtp = async (code: string): Promise<boolean> => {

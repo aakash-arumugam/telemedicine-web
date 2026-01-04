@@ -7,19 +7,20 @@ export const defineDoctorRoutes = (app: Application, baseUrl: string): void => {
     const router = Router();
 
     // POST /api/v1/doctors/register - Register new doctor
-    router.post('/register', authenticate, validateCreateDoctor, async (req: Request, res: Response) => {
-        try {
-            const { doctor, token } = await doctorService.createDoctor(req.body);
-
-            res.status(201).json({
-                success: true,
-                data: { doctor, token },
-                message: 'Doctor registered successfully',
-            });
-        } catch (error: any) {
-            res.status(400).json({ success: false, error: error.message });
-        }
-    });
+    // DEPRECATED: Use /api/v1/users/register
+    // router.post('/register', authenticate, validateCreateDoctor, async (req: Request, res: Response) => {
+    //     try {
+    //         const { doctor, token } = await doctorService.createDoctor(req.body);
+    //
+    //         res.status(201).json({
+    //             success: true,
+    //             data: { doctor, token },
+    //             message: 'Doctor registered successfully',
+    //         });
+    //     } catch (error: any) {
+    //         res.status(400).json({ success: false, error: error.message });
+    //     }
+    // });
 
     router.get('/speciality/:speciality', authenticate, validateGetDoctorBySpeciality, async (req: Request, res: Response) => {
         try {

@@ -3,5 +3,6 @@ export const COLLECTION_NAMES = {
     DOCTOR: 'doctors',
     SPECIALTY: 'specialties',
     APPOINTMENT: 'appointments',
-    AVAILABILITY: 'availability'
+    AVAILABILITY: 'availability',
+    PATIENT: 'patients'
 }

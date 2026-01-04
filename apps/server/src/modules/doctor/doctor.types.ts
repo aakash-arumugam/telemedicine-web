@@ -1,7 +1,8 @@
+import { Types } from 'mongoose';
+
 export interface IDoctor {
+    userId: Types.ObjectId;
     name: string;
-    email: string;
-    password: string;
     gender: string;
     dob: Date;
     speciality: string;

@@ -26,6 +26,7 @@ export default function Login() {
         maritalStatus: '',
         dob: undefined,
         code: '',
+        role: 'patient',
     });
 
     // Login State
@@ -73,7 +74,7 @@ export default function Login() {
             setCurrentStep(currentStep + 1);
         } else {
             console.log("Form Data....", { ...formData })
-            signupMutation.mutate({ name: formData.name, email: formData.email, password: formData.password, dob: formData.dob, gender: formData.gender, maritalStatus: formData.maritalStatus, code: formData.code });
+            signupMutation.mutate({ name: formData.name, email: formData.email, password: formData.password, dob: formData.dob, gender: formData.gender, maritalStatus: formData.maritalStatus, code: formData.code, role: formData.role });
         }
     };
 

@@ -16,10 +16,7 @@ const UserSchema: Schema = new Schema<IUserDoc>(
         accessToken: { type: String, required: false },
         refreshToken: { type: String, required: false },
         authProvider: { type: String, enum: ['local', 'google'], default: 'local' },
-        gender: { type: String, required: false },
-        maritalStatus: { type: String, required: false },
-        dob: { type: Date, required: false },
-        address: { type: String, required: false },
+        role: { type: String, enum: ['patient', 'doctor', 'superadmin'], default: 'patient' },
         isProfileComplete: { type: Boolean, default: false },
     },
     { timestamps: true }
