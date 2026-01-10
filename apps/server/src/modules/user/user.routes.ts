@@ -35,6 +35,26 @@ export const defineUserRoutes = (app: Application, baseUrl: string): void => {
         }
     })
 
+    // GET /api/v1/users/me - Get current user profile
+    router.get('/me', authenticate, async (req: Request, res: Response) => {
+        try {
+            const userId = (req as any).user._id;
+            const userProfile = await userService.getUserProfile(userId);
+
+            if (!userProfile) {
+                res.status(404).json({ success: false, error: 'User not found' });
+                return;
+            }
+
+            res.status(200).json({
+                success: true,
+                data: userProfile,
+            });
+        } catch (error: any) {
+            res.status(400).json({ success: false, error: error.message });
+        }
+    });
+
     // PUT /api/v1/users/profile - Update user profile
     router.put('/profile', authenticate, async (req: Request, res: Response) => {
         try {

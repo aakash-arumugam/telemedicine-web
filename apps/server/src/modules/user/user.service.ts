@@ -144,3 +144,23 @@ export const deleteUser = async (id: string): Promise<IUser | null> => {
 // };
 
 export const getUserByEmail = async (email: string) => await userRepo.findUserByEmail(email);
+
+export const getUserProfile = async (userId: string) => {
+
+    console.log("User Id", userId);
+
+    const user = await userRepo.findUserById(userId);
+    if (!user) return null;
+
+    let profile = null;
+    if (user.role === 'patient') {
+        profile = await patientRepo.findPatientByUserId(userId);
+    } else if (user.role === 'doctor') {
+        profile = await doctorRepo.findDoctor({ userId });
+    }
+
+    return {
+        ...user.toObject(),
+        profile
+    };
+}
