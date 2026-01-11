@@ -11,4 +11,5 @@ export interface IUser {
     dob?: Date;
     address?: string;
     isProfileComplete: boolean;
+    role: 'patient' | 'doctor' | 'superadmin';
 }

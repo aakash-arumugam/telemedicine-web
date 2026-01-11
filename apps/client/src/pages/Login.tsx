@@ -39,7 +39,14 @@ export default function Login() {
     const userLoginMutation = useMutation({
         mutationFn: loginUser,
         onSuccess: (data) => {
-            navigate('/dashboard');
+            const userRole = data.data.user.role;
+
+            if (userRole === "patient") {
+                navigate("/dashboard")
+            } else if (userRole === "doctor") {
+                navigate("/doctor/dashboard")
+            }
+
             localStorage.setItem('token', data.data.token);
         },
         onError: (error: any) => {
