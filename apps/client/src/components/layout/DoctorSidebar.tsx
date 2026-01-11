@@ -7,6 +7,7 @@ import {
     User,
     Settings
 } from 'lucide-react';
+import { useUser } from '../../context/UserContext';
 
 export default function DoctorSidebar() {
     const navItems = [
@@ -15,6 +16,8 @@ export default function DoctorSidebar() {
         { icon: Clock, label: 'Availability', path: '/doctor/availability' },
         { icon: User, label: 'Profile', path: '/doctor/profile' },
     ];
+
+    const { user, doctor } = useUser();
 
     return (
         <aside className="fixed left-0 top-0 h-screen w-64 bg-white border-r border-neutral-100 flex flex-col z-50 hidden md:flex">
@@ -59,8 +62,8 @@ export default function DoctorSidebar() {
                         className="w-8 h-8 rounded-full bg-neutral-100 border border-neutral-200"
                     />
                     <div className="flex-1 min-w-0">
-                        <p className="text-sm font-semibold text-neutral-900 truncate">Dr. Smith</p>
-                        <p className="text-xs text-neutral-400 truncate">Cardiologist</p>
+                        <p className="text-sm font-semibold text-neutral-900 truncate">{user?.name}</p>
+                        <p className="text-xs text-neutral-400 truncate">{doctor?.speciality}</p>
                     </div>
                     <Settings size={16} className="text-neutral-400" />
                 </button>

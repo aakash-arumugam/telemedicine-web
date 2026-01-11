@@ -23,11 +23,11 @@ export const defineUserRoutes = (app: Application, baseUrl: string): void => {
 
     router.post('/login', validateUserLogin, async (req: Request, res: Response) => {
         try {
-            const { user, token } = await userService.loginUser(req.body.email, req.body.password);
+            const { user, token, userRoleData } = await userService.loginUser(req.body.email, req.body.password);
 
             res.status(200).json({
                 success: true,
-                data: { user, token },
+                data: { user, token, userRoleData },
                 message: 'User logged in successfully',
             });
         } catch (error: any) {

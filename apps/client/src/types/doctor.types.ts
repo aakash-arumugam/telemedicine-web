@@ -1,4 +1,5 @@
 export interface IDoctor {
+    userId: string;
     name: string;
     email: string;
     gender: string;

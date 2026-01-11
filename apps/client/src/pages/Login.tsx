@@ -8,6 +8,9 @@ import { Eye, EyeOff, ArrowRight, AlertCircle } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { type SignupData } from '../api/auth.api';
 import { createUser, loginUser } from '../api/user';
+import { useUser } from '../context/UserContext';
+import type { IPatient } from '../types/patient.types';
+import type { IDoctor } from '../types/doctor.types';
 
 const shakeAnimation = {
     x: [0, -10, 10, -10, 10, 0],
@@ -35,15 +38,20 @@ export default function Login() {
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState('');
     const [shake, setShake] = useState(false);
+    const { setUser, setDoctor, setPatient } = useUser();
 
     const userLoginMutation = useMutation({
         mutationFn: loginUser,
         onSuccess: (data) => {
-            const userRole = data.data.user.role;
+            const user = data.data.user;
+            const userRole = user.role;
+            setUser(user);
 
             if (userRole === "patient") {
+                setPatient(data.data.userRoleData as IPatient);
                 navigate("/dashboard")
             } else if (userRole === "doctor") {
+                setDoctor(data.data.userRoleData as IDoctor);
                 navigate("/doctor/dashboard")
             }
 

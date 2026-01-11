@@ -57,7 +57,7 @@ export const registerUser = async (data: userCreationSchemaT): Promise<{ user: I
     return { user, token };
 };
 
-export const loginUser = async (email: string, password: string): Promise<{ user: IUser; token: string }> => {
+export const loginUser = async (email: string, password: string): Promise<{ user: IUser; token: string; userRoleData: any }> => {
     // Find user
     const user = await userRepo.findUserByEmail(email);
     if (!user) {
@@ -78,7 +78,9 @@ export const loginUser = async (email: string, password: string): Promise<{ user
     // Generate token
     const token = JWTUtils.generateToken(user._id.toString());
 
-    return { user, token };
+    const userRoleData = user.role === 'patient' ? await patientRepo.findPatientByUserId(user._id.toString()) : user.role === 'doctor' ? await doctorRepo.findDoctor({ userId: user._id.toString() }) : null;
+
+    return { user, token, userRoleData };
 };
 
 export const getUserById = async (id: string): Promise<IUser | null> => {

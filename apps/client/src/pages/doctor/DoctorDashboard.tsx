@@ -17,22 +17,22 @@ const DASHBOARD_STATS = [
         color: "bg-blue-500",
         bg: "bg-blue-50 text-blue-600"
     },
-    {
-        label: "Total Patients",
-        value: "1,248",
-        subtext: "+12% this month",
-        icon: Users,
-        color: "bg-purple-500",
-        bg: "bg-purple-50 text-purple-600"
-    },
-    {
-        label: "Consultation Hours",
-        value: "42h",
-        subtext: "This week",
-        icon: Clock,
-        color: "bg-emerald-500",
-        bg: "bg-emerald-50 text-emerald-600"
-    }
+    // {
+    //     label: "Total Patients",
+    //     value: "1,248",
+    //     subtext: "+12% this month",
+    //     icon: Users,
+    //     color: "bg-purple-500",
+    //     bg: "bg-purple-50 text-purple-600"
+    // },
+    // {
+    //     label: "Consultation Hours",
+    //     value: "42h",
+    //     subtext: "This week",
+    //     icon: Clock,
+    //     color: "bg-emerald-500",
+    //     bg: "bg-emerald-50 text-emerald-600"
+    // }
 ];
 
 const UPCOMING_APPOINTMENTS = [

@@ -1,3 +1,5 @@
+import type { IDoctor } from "../../types/doctor.types";
+import type { IPatient } from "../../types/patient.types";
 import type { IUser } from "../../types/user.types";
 import axiosInstance from "../../utils/axiosInstance";
 import type { SignupData } from "../auth.api";
@@ -31,6 +33,7 @@ export const loginUser = async (data: { email: string; password: string }): Prom
     data: {
         user: IUser;
         token: string;
+        userRoleData: IDoctor | IPatient;
     };
     message: string;
 }> => {
