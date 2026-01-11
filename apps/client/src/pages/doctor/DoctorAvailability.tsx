@@ -43,6 +43,7 @@ export default function DoctorAvailability() {
     const [newSlotEnd, setNewSlotEnd] = useState('');
     const [isAdding, setIsAdding] = useState(false);
     const [deleteSlotId, setDeleteSlotId] = useState<number | null>(null);
+    const [error, setError] = useState<string | null>(null);
 
     // Generate calendar days
     const monthStart = new Date(viewDate.getFullYear(), viewDate.getMonth(), 1);
@@ -59,7 +60,27 @@ export default function DoctorAvailability() {
     const formatDate = (d: Date) => d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
 
     const handleAddSlot = () => {
-        if (!newSlotStart || !newSlotEnd) return;
+        setError(null);
+        if (!newSlotStart || !newSlotEnd) {
+            setError("Please select both start and end times.");
+            return;
+        }
+
+        // Validation 1: Start time must be before end time
+        if (newSlotStart >= newSlotEnd) {
+            setError("End time must be after start time.");
+            return;
+        }
+
+        // Validation 2: Cannot create slot in the past
+        const [startHour, startMinute] = newSlotStart.split(':').map(Number);
+        const slotDateTime = new Date(selectedDate);
+        slotDateTime.setHours(startHour, startMinute, 0, 0);
+
+        if (slotDateTime < new Date()) {
+            setError("Cannot create slots for past dates or times.");
+            return;
+        }
 
         const newSlot = {
             id: Date.now(),
@@ -208,19 +229,27 @@ export default function DoctorAvailability() {
                                             <Clock size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-400 pointer-events-none" />
                                         </div>
                                     </div>
-                                    <div className="col-span-2 lg:col-span-1 flex gap-2 pt-2 lg:pt-0">
-                                        <button
-                                            onClick={handleAddSlot}
-                                            className="flex-1 lg:flex-none px-6 py-3 bg-neutral-900 text-white rounded-xl text-sm font-bold hover:bg-neutral-800 shadow-md shadow-neutral-200 transition-all"
-                                        >
-                                            Add
-                                        </button>
-                                        <button
-                                            onClick={() => setIsAdding(false)}
-                                            className="flex-1 lg:flex-none px-6 py-3 bg-white border border-neutral-200 text-neutral-600 rounded-xl text-sm font-bold hover:bg-neutral-50 transition-all"
-                                        >
-                                            Cancel
-                                        </button>
+                                    <div className="col-span-2 lg:col-span-1 flex flex-col gap-2 pt-2 lg:pt-0">
+                                        {error && (
+                                            <p className="text-xs text-red-500 font-medium">{error}</p>
+                                        )}
+                                        <div className="flex gap-2">
+                                            <button
+                                                onClick={handleAddSlot}
+                                                className="flex-1 lg:flex-none px-6 py-3 bg-neutral-900 text-white rounded-xl text-sm font-bold hover:bg-neutral-800 shadow-md shadow-neutral-200 transition-all"
+                                            >
+                                                Add
+                                            </button>
+                                            <button
+                                                onClick={() => {
+                                                    setIsAdding(false);
+                                                    setError(null);
+                                                }}
+                                                className="flex-1 lg:flex-none px-6 py-3 bg-white border border-neutral-200 text-neutral-600 rounded-xl text-sm font-bold hover:bg-neutral-50 transition-all"
+                                            >
+                                                Cancel
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             </motion.div>

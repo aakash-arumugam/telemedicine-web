@@ -74,7 +74,7 @@ export default function DoctorProfile() {
                                 <div key={edu._id} className="p-4 bg-neutral-50 rounded-xl border border-neutral-100">
                                     <h4 className="font-bold text-neutral-900 uppercase">{edu.degree}</h4>
                                     <p className="text-sm text-neutral-600">{edu.university}</p>
-                                    <p className="text-xs text-neutral-400 mt-1">Class of {edu.year}</p>
+                                    <p className="text-xs text-neutral-400 mt-1">Year {edu.year}</p>
                                 </div>
                             ))}
                         </div>

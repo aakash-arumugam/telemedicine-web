@@ -58,7 +58,7 @@ export default function PatientProfile() {
                         <h2 className="text-xl font-bold text-neutral-900">{patient.name}</h2>
                         <p className="text-sm text-neutral-500">{patient.age} yrs, {patient.gender} • {patient.bloodGroup}</p>
 
-                        <div className="grid grid-cols-2 gap-3 mt-6">
+                        {/* <div className="grid grid-cols-2 gap-3 mt-6">
                             <button
                                 onClick={() => window.open('https://meet.google.com/abc-defg-hij', '_blank')}
                                 className="py-2.5 bg-neutral-900 text-white rounded-xl text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-neutral-200"
@@ -68,7 +68,7 @@ export default function PatientProfile() {
                             <button className="py-2.5 border border-neutral-200 text-neutral-700 rounded-xl text-sm font-bold hover:bg-neutral-50 transition-colors">
                                 Message
                             </button>
-                        </div>
+                        </div> */}
                     </div>
 
                     {/* Medical Info */}
