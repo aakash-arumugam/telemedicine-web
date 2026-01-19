@@ -6,6 +6,7 @@ import {
     GraduationCap,
     Activity
 } from 'lucide-react';
+import { useUser } from '../../context/UserContext';
 
 // MOCK DATA FROM USER REQUEST
 const DOCTOR_PROFILE = {
@@ -29,6 +30,9 @@ const DOCTOR_PROFILE = {
 };
 
 export default function DoctorProfile() {
+
+    const { doctor } = useUser();
+
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -48,15 +52,15 @@ export default function DoctorProfile() {
                 {/* Profile Header */}
                 <div className="bg-neutral-900 p-8 text-white flex flex-col md:flex-row items-center gap-6">
                     <div className="w-24 h-24 bg-white/10 rounded-full flex items-center justify-center text-4xl font-bold backdrop-blur-sm">
-                        {DOCTOR_PROFILE.name.charAt(0).toUpperCase()}
+                        {doctor?.name.charAt(0).toUpperCase()}
                     </div>
                     <div className="text-center md:text-left">
-                        <h2 className="text-2xl font-bold capitalize">Dr. {DOCTOR_PROFILE.name}</h2>
+                        <h2 className="text-2xl font-bold capitalize">Dr. {doctor?.name}</h2>
                         <div className="flex items-center gap-2 justify-center md:justify-start text-neutral-300 mt-1">
                             <Stethoscope size={16} />
-                            <span className="capitalize">{DOCTOR_PROFILE.speciality} Specialist</span>
+                            <span className="capitalize">{doctor?.speciality} Specialist</span>
                             <span>•</span>
-                            <span>{DOCTOR_PROFILE.experience} Years Experience</span>
+                            <span>{doctor?.experience} Years Experience</span>
                         </div>
                     </div>
                 </div>
@@ -70,8 +74,8 @@ export default function DoctorProfile() {
                             <GraduationCap className="text-blue-600" /> Education
                         </h3>
                         <div className="space-y-3">
-                            {DOCTOR_PROFILE.education.map((edu) => (
-                                <div key={edu._id} className="p-4 bg-neutral-50 rounded-xl border border-neutral-100">
+                            {doctor?.education.map((edu, index) => (
+                                <div key={index} className="p-4 bg-neutral-50 rounded-xl border border-neutral-100">
                                     <h4 className="font-bold text-neutral-900 uppercase">{edu.degree}</h4>
                                     <p className="text-sm text-neutral-600">{edu.university}</p>
                                     <p className="text-xs text-neutral-400 mt-1">Year {edu.year}</p>
@@ -92,7 +96,7 @@ export default function DoctorProfile() {
                                 </div>
                                 <div>
                                     <span className="block text-xs font-bold text-neutral-400 uppercase">Gender</span>
-                                    <span className="text-neutral-900 capitalize">{DOCTOR_PROFILE.gender}</span>
+                                    <span className="text-neutral-900 capitalize">{doctor?.gender}</span>
                                 </div>
                             </div>
                             <div className="flex items-start gap-3">
@@ -101,18 +105,22 @@ export default function DoctorProfile() {
                                 </div>
                                 <div>
                                     <span className="block text-xs font-bold text-neutral-400 uppercase">Date of Birth</span>
-                                    <span className="text-neutral-900">{formatDate(DOCTOR_PROFILE.dob)}</span>
+                                    <span className="text-neutral-900">{doctor?.dob.toString()}</span>
                                 </div>
                             </div>
-                            <div className="flex items-start gap-3">
-                                <div className="mt-1 text-neutral-400">
-                                    <MapPin size={18} />
-                                </div>
-                                <div>
-                                    <span className="block text-xs font-bold text-neutral-400 uppercase">Address</span>
-                                    <span className="text-neutral-900 capitalize leading-relaxed">{DOCTOR_PROFILE.address}</span>
-                                </div>
-                            </div>
+                            {
+                                doctor?.address && (
+                                    <div className="flex items-start gap-3">
+                                        <div className="mt-1 text-neutral-400">
+                                            <MapPin size={18} />
+                                        </div>
+                                        <div>
+                                            <span className="block text-xs font-bold text-neutral-400 uppercase">Address</span>
+                                            <span className="text-neutral-900 capitalize leading-relaxed">{doctor?.address}</span>
+                                        </div>
+                                    </div>
+                                )
+                            }
                         </div>
                     </div>
 

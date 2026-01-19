@@ -1,12 +1,11 @@
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import {
-    Users,
     CalendarCheck,
-    Clock,
     TrendingUp,
     Video
 } from 'lucide-react';
+import { useUser } from '../../context/UserContext';
 
 const DASHBOARD_STATS = [
     {
@@ -68,11 +67,13 @@ const UPCOMING_APPOINTMENTS = [
 export default function DoctorDashboard() {
     const navigate = useNavigate();
 
+    const { doctor } = useUser();
+
     return (
         <div className="space-y-8">
             {/* Header */}
             <header>
-                <h1 className="text-2xl font-bold text-neutral-900">Good Morning, Dr. Smith</h1>
+                <h1 className="text-2xl font-bold text-neutral-900">Good Morning, Dr. {doctor?.name}</h1>
                 <p className="text-neutral-500 text-sm mt-1">Here's your schedule overview for today.</p>
             </header>
 
